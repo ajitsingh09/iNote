@@ -5,7 +5,7 @@ const express = require('express')
 connectToMongo()
 
 const app = express()
-const port = 3000
+const port = 5000
 
 //middlewhere to get the request and to send response between client and backend-database
 app.use(express.json())
