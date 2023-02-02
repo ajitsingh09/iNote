@@ -5,6 +5,7 @@ const { body, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const jwt_secretkey = "thisisajit'skey"
+const fetchuser=require('../middleware/fetchuser')
 
 //ROUTE 1: creating a user using:Post /api/auth/createuser :NO login required 
 route.post("/createuser",
@@ -102,5 +103,22 @@ route.post("/loginuser",
         }
 
     })
+// ROUTE 3: fetching user data using:Post /api/auth/getuser :login required 
+// Here we are gonna user a middleware fetchuser
+route.post("/getuser", fetchuser, async (req, res) => {
+
+    try {
+        const userid = req.user
+        const user = await User.findById(userid).select("-password")
+        res.send(user)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send("Internal Server Error")
+
+    }
+
+
+
+})
 
 module.exports = route
