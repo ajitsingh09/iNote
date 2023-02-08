@@ -83,7 +83,38 @@ route.put("/deletenote/:id", fetchuser, async (req, res) => {//this id part in t
 
         //note is being updated 
         note = await Note.findByIdAndDelete(req.params.id)
-        res.send({"successful":"note has been Successfuly deleted",note:note })
+        res.send({ "successful": "note has been Successfuly deleted", note: note })
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).send("Internal Server Error")
+    }
+
+})
+// ROUTE 5: delete all notes on the database using:Post /api/auth/deleteallnote :login required 
+route.put("/deleteallnote", fetchuser, async (req, res) => {//this id part in the url can be accessed by param
+    try {
+        //it checks weather the entered id note is there or not
+        const userid = req.user
+        let notes = await Note.find({ user: userid })
+        if (!notes) {
+            return res.status(404).send("No Notes Have been found")
+        } 
+        let len = notes.length
+        let count=0
+        while (len) {
+        await Note.findByIdAndDelete(notes[count].id)
+        count++
+            len--
+        }
+        res.json({"Success": "All notes have been deleted successfully"})
+
+
+        
+
+        // //note is being updated 
+        // note = await Note.findByIdAndDelete(req.params.id)
+        // res.send({"successful":"note has been Successfuly deleted",note:note })
 
     } catch (err) {
         console.log(err)

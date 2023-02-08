@@ -1,6 +1,6 @@
 const connectToMongo=require("./db") 
 const express = require('express')
-
+const cors=require('cors')
 //data base connected
 connectToMongo()
 
@@ -9,6 +9,7 @@ const port = 5000
 
 //middlewhere to get the request and to send response between client and backend-database
 app.use(express.json())
+app.use(cors())
 
 //Available Routes
 app.use("/api/auth" , require("./routes/auth"))
