@@ -7,7 +7,7 @@ const NoteState = (props) => {
 
     //get notes
     const getnote = async () => {
-        //API CALL
+        // API CALL
         const response = await fetch(`${host}/api/note/fetchallnote`, {
             method: 'GET',
             headers: {
@@ -22,7 +22,6 @@ const NoteState = (props) => {
     //Add note
     const addnote = async (title, discription, tag) => {
         console.log("Addnote is being initiated")
-
         //API CALL
         const response = await fetch(`${host}/api/note/addnote`, {
             method: 'POST',
@@ -36,28 +35,16 @@ const NoteState = (props) => {
 
             body: JSON.stringify({ title, discription, tag })
         });
-
-
-
-        //T0-d0 := now this note will be fetch by API after we send our data
-        const note = {
-            "_id": "63dfc6dg39ee0sdfsdfs8160030aab231",
-            "user": "63dfb1634a0e3f5ac94ec11b",
-            "title": title,
-            "discription": discription,
-            "tag": tag,
-            "Date": "2023-02-05T15:07:37.907Z",
-            "__v": 0
-        }
-        setNotes(notes.concat(note))
+        const json=await response.json()
+        console.log(json)
     }
 
     //edit note
     //now there is a very high chance it will not work reference video 65 time 1:00
-    const updatenote = async (id, title, discription, tag) => {
+    const editnote = async (id, title, discription, tag) => {
         //API call
         const response = await fetch(`${host}/api/note/updatenote/${id}`, {
-            method: 'POST',
+            method: 'PUT',
 
             headers: {
                 'Content-Type': 'application/json',
@@ -69,19 +56,23 @@ const NoteState = (props) => {
         });
 
         //mydoing
-        const json = await response.json()
-        console.log(json)
+        await response.json()
+        
 
 
-
+        let newnotes=JSON.parse(JSON.stringify(notes))
+        // let newnotes=notes----->this will not work as it create a reference to the notes object
+        
         //logic to edit in client
-        for (let index = 0; index < notes.length; index++) {
+        for (let index = 0; index < newnotes.length; index++) {
             // console.log(notes[index])          
-            if (notes[index]._id === id) {
-                notes[index].title = title
-                notes[index].discription = discription
-                notes[index].tag = tag
+            if (newnotes[index]._id === id) {
+                newnotes[index].title = title
+                newnotes[index].discription = discription
+                newnotes[index].tag = tag
+                break;
             }
+            setNotes(newnotes)
 
         }
 
@@ -104,7 +95,7 @@ const NoteState = (props) => {
 
     }
     return (
-        <NoteContext.Provider value={{ notes, addnote, deletenote, updatenote, getnote }}>
+        <NoteContext.Provider value={{ notes, addnote, deletenote, editnote, getnote }}>
             {props.children}
         </NoteContext.Provider>
     )

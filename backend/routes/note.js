@@ -22,7 +22,7 @@ route.get("/fetchallnote", fetchuser, async (req, res) => {
 // ROUTE 2: Adding notes to the database using:Post /api/auth/addnote :login required 
 route.post("/addnote", fetchuser, [
     body('title', "Title Cannot be empty").exists(),
-    body('discription', "Discription Should have minimum 3 letter").isLength({ min: 3 })
+    body('discription', "Discription Should have minimum 3 letter").exists()
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
