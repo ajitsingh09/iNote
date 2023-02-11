@@ -18,6 +18,7 @@ route.post("/createuser",
     async (req, res) => {
         //validates and see if there is an error
         const errors = validationResult(req);
+        let success=false;
         if (!errors.isEmpty()) {
             //if the error is not empty it return status 400 and a json carring the error
             return res.status(400).json({ errors: errors.array() });
@@ -28,7 +29,8 @@ route.post("/createuser",
         try {
             let user = await User.findOne({ email: req.body.email })
             if (user) {
-                return res.status(400).json({ error: "User with this email address Already Exists....." })
+                success=false
+                return res.status(400).json({ success,error: "User with this email address Already Exists....." })
             }
 
             //Securing the password -BYCRYPT JS
@@ -48,10 +50,10 @@ route.post("/createuser",
 
             //USING JWT TOKEN AUTHENTICATION
             let authtoken = jwt.sign(data, jwt_secretkey)//don't know how it works
-
+            success=true
 
             //res.json(user)
-            res.json({ authtoken })
+            res.json({success, authtoken })
         } catch (err) {
             console.log(err)
             res.status(500).send("Internal Server Error")
@@ -78,14 +80,17 @@ route.post("/loginuser",
         //1. Entered email exist or not
         //2. The correct password assciated to the email has been entered or not
         const { email, password } = req.body
+        let success=false;
         try {
             const user = await User.findOne({ email })
             if (!user) {
-                return res.status(400).json({ errors: "please enter correct credentials" })
+                success=false;
+                return res.status(400).json({ success,errors: "please enter correct credentials" })
             }
             const passwordcompare = await bcrypt.compare(password, user.password)
             if (!passwordcompare) {
-                return res.status(400).json({ error: "please enter correct credentials" })
+                success=false
+                return res.status(400).json({success, error: "please enter correct credentials" })
             }
 
             //After the above two conditions have been fullfield the instruction follows....
@@ -95,16 +100,18 @@ route.post("/loginuser",
                 }
             }
             let authtoken = jwt.sign(data, jwt_secretkey)
-            res.json({ authtoken })
+            success=true
+            res.json({success, authtoken })
         } catch (error) {
-            console.log(err)
+            console.log(error)
             res.status(500).send("Internal Server Error")
 
         }
 
     })
 // ROUTE 3: fetching user data using:Post /api/auth/getuser :login required 
-// Here we are gonna user a middleware fetchuser
+// Here we are gonna user a middleware 
+
 route.post("/getuser", fetchuser, async (req, res) => {
 
     try {

@@ -11,8 +11,8 @@ const NoteState = (props) => {
         const response = await fetch(`${host}/api/note/fetchallnote`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjNkZmIxNjM0YTBlM2Y1YWM5NGVjMTFiIiwiaWF0IjoxNjc1NjA0MzIzfQ.JxGlO8tRylustv67CD9-HKEJzE8C_2alwHC5PVESV9I"
+                'Content-Type': "application/json",
+                'auth-token': localStorage.getItem("token")
             },
         });
         const json = await response.json()
@@ -21,34 +21,35 @@ const NoteState = (props) => {
 
     //Add note
     const addnote = async (title, discription, tag) => {
-        console.log("Addnote is being initiated")
+        // console.log("Addnote is being initiated")
         //API CALL
         const response = await fetch(`${host}/api/note/addnote`, {
             method: 'POST',
             mode: 'cors',
 
             headers: {
-                'Content-Type': 'application/json',
-                "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjNkZmIxNjM0YTBlM2Y1YWM5NGVjMTFiIiwiaWF0IjoxNjc1NjA0MzIzfQ.JxGlO8tRylustv67CD9-HKEJzE8C_2alwHC5PVESV9I"
+                'Content-Type': "application/json",
+                'auth-token':localStorage.getItem('token')
 
             },
 
             body: JSON.stringify({ title, discription, tag })
         });
-        const json=await response.json()
-        console.log(json)
+        await response.json()
+        // console.log(json)
     }
 
     //edit note
     //now there is a very high chance it will not work reference video 65 time 1:00
     const editnote = async (id, title, discription, tag) => {
         //API call
+        // console.log("note edit")
         const response = await fetch(`${host}/api/note/updatenote/${id}`, {
             method: 'PUT',
 
             headers: {
-                'Content-Type': 'application/json',
-                "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjNkZmIxNjM0YTBlM2Y1YWM5NGVjMTFiIiwiaWF0IjoxNjc1NjA0MzIzfQ.JxGlO8tRylustv67CD9-HKEJzE8C_2alwHC5PVESV9I"
+                'Content-Type': "application/json",
+                'auth-token':localStorage.getItem('token')
 
             },
 
@@ -56,7 +57,8 @@ const NoteState = (props) => {
         });
 
         //mydoing
-        await response.json()
+       await response.json()
+    //    console.log(json)
         
 
 
@@ -83,13 +85,13 @@ const NoteState = (props) => {
         const response = await fetch(`${host}/api/note/deletenote/${id}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
-                "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjNkZmIxNjM0YTBlM2Y1YWM5NGVjMTFiIiwiaWF0IjoxNjc1NjA0MzIzfQ.JxGlO8tRylustv67CD9-HKEJzE8C_2alwHC5PVESV9I"
+                'Content-Type': "application/json",
+                'auth-token':localStorage.getItem('token')
             },
         });
-        const json=await response.json()
-        console.log(json)
-
+        await response.json()
+        // console.log(json)
+        props.showalert("Note Deleted Successfully","success")
         const newnote=notes.filter((note)=>{return note._id!==id})
         setNotes(newnote)
 

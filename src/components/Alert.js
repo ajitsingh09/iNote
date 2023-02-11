@@ -1,13 +1,9 @@
 import React from 'react'
-
-const Alert = (props) => {
-    return (
-       
-            <div className="alert alert-success my-2" role="alert">
-                {props.message}
-            </div>
-        
-    )
+export default function Alert(props) {
+    
+  return (
+   props.alert && <div className={`alert alert-${props.alert.type}`} role="alert" id="alert" >
+        <strong>{props.alert.type==="danger"?"Error":"Success"}</strong>: {props.alert.msg} 
+    </div>
+  )
 }
-
-export default Alert
